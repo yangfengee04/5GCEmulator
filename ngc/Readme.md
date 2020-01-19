@@ -112,3 +112,10 @@ To run nef, just execute as below:
 
 To generate certifications for TLS, can use shell script - `genCerts.sh` in `ngc/scripts`. 
 Can get detail usage by executing the script as: `./genCerts.sh ?` .
+
+## Launch the emmulator
+After building AF and NEF, the emulator can be set up as below:
+```sh
+./start.sh
+```
+More infomation regarding the emulator can be referred to start.sh.
