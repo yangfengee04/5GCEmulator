@@ -11,6 +11,7 @@
 ###Non-offloading phase -- run ./test/Delete.sh to clear the Indicator file ("off") to stop offloading.
 ###
 Emulator_path="/tmp/5GCEmulator"
+certs_path="/etc/certs"
 bin_dir=$PWD
 #IP addr of a remote MEC server
 svr_addr=
@@ -29,7 +30,7 @@ start.sh [-h] [-s srv_ip]\n
    -s specify the ip of a remote MEC server.\n
    In case of no options, an iperf instance will be launched in the server mode to emulate a local MEC server.
 "
-#process cmdline arguments
+#Process cmdline arguments
 islocal=true
 for opt
 do
@@ -42,8 +43,22 @@ do
 			echo "Illegal options"; exit 1;;
 	esac
 done
-#echo "islocal: $islocal"
-#start an iperf instance when srv_ip is not given
+#Check and install certs
+mkdir -p "$certs_path"
+if [ -e $certs_path/root-ca-cert.pem ] && [ -e $certs_path/server-cert.pem ] && [ -e $certs_path/server-key.pem ]; then
+	echo "Certificates exist"
+else
+	echo "Installing certificates..."
+	sleep $time
+	./scripts/genCerts.sh -t DNS -n localhost -m localhost
+	rm extfile.cnf root-ca-key.pem root-ca-cert.srl server-request.csr
+	mv root-ca-cert.pem server-cert.pem server-key.pem "$certs_path" || { echo "Fail to generate certificates... Please do it manually and re-run start.sh." ; exit 1; }
+	sleep $time
+	echo "Certificates are installed"
+	sleep $time
+fi
+
+#Start an iperf instance when srv_ip is not given
 if $islocal; then
 	echo "Lauching a local server"
 	$Svr_exe &
@@ -56,7 +71,7 @@ sleep $time
 echo "Launching NEF ..."
 $bin_dir/$NEF_exe &
 sleep $time
-#start the loop of UPF output
+#Start the loop of UPF output
 while true; do
 	case $state in
 		false)
