@@ -14,7 +14,7 @@ Emulator_path="/tmp/5GCEmulator"
 certs_path="/etc/certs"
 bin_dir=$PWD
 #IP addr of a remote MEC server
-svr_addr=
+svr_addr=127.0.0.1
 time=4
 UPF_exe="iperf -t $time -u -c $svr_addr"
 Svr_exe="iperf -u -s -i 1"
@@ -87,6 +87,7 @@ while true; do
 					echo "Offloading in progress..."
 				fi
                         $UPF_exe >/dev/null 2>&1
+                        #$UPF_exe
                         else state=false
                         fi;;
 	esac
