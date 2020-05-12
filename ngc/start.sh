@@ -25,9 +25,9 @@ export Emulator_path=$Emulator_path
 mkdir -p $Emulator_path
 rm -rf $Emulator_path/*
 Usage="\
-start.sh [-h] [-s srv_ip]\n
+start.sh [-h] [-s srv_hostname]\n
    -h print the help message.\n
-   -s specify the ip of a remote MEC server.\n
+   -s specify the hostname of a remote MEC server.\n
    In case of no options, an iperf instance will be launched in the server mode to emulate a local MEC server.
 "
 #Process cmdline arguments
@@ -38,7 +38,7 @@ do
 		-h)
 			echo -e $Usage; exit 0;;
 		-s)
-			srv_addr=$2; islocal=false;;
+			srv_addr=`nslookup $2|grep Address:|sed '1d'|sed 's/Address://g'`;srv_addr=`echo $srv_addr|awk '{print $1}'`;islocal=false;;
 		-*)
 			echo "Illegal options"; exit 1;;
 	esac
