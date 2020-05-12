@@ -25,9 +25,9 @@ export Emulator_path=$Emulator_path
 mkdir -p $Emulator_path
 rm -rf $Emulator_path/*
 Usage="\
-start.sh [-h] [-s srv_domain]\n
+start.sh [-h] [-s srv_hostname]\n
    -h print the help message.\n
-   -s specify the domain of a remote MEC server.\n
+   -s specify the hostname of a remote MEC server.\n
    In case of no options, an iperf instance will be launched in the server mode to emulate a local MEC server.
 "
 #Process cmdline arguments
