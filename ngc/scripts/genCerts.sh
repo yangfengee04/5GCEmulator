@@ -31,7 +31,7 @@ then
    helpPrint
 fi
 
-if [ "$sanType" == IP ] || [ "$sanType" == DNS ]
+if [ $sanType = IP ] || [ $sanType = DNS ]
 then 
    echo "Input OK"
 else

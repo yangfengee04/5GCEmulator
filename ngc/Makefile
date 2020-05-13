@@ -6,7 +6,7 @@
 
 export GO111MODULE = on
 
-.PHONY: build af nef lint test-unit-af test-unit-nef
+.PHONY: build af nef test-unit-nef clean help
 TMP_DIR:=$(shell mktemp -d)
 BUILD_DIR ?=dist
 CERTS_DIR ?=/etc/certs
@@ -25,6 +25,13 @@ nef:
 	GOOS=linux go build -o "${BUILD_DIR}/nef" ./cmd/nef
 	cp ${BUILD_DIR}/nef .
 
+test-unit-nef:
+	rm -rf "${CERTS_DIR}"
+	mkdir -p "${CERTS_DIR}"
+	./scripts/genCerts.sh -t DNS -n localhost -m localhost
+	mv root-ca-cert.pem root-ca-cert.srl root-ca-key.pem server-cert.pem server-key.pem server-request.csr "${CERTS_DIR}"
+	ginkgo -v -cover ./pkg/nef
+
 clean:
 	rm -rf "${BUILD_DIR}"
 	rm -rf "${CERTS_DIR}"
@@ -36,3 +43,5 @@ help:
 	@echo "  build                  to build all"
 	@echo "  af                     to build the AF"
 	@echo "  nef                    to build the NEF"
+	@echo "Executing Test:"
+	@echo "  test-unit-nef          to run NEF unit tests with ginkgo"
